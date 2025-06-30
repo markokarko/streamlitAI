@@ -85,38 +85,4 @@ with st.expander("About this Nutrition Q&A System"):
     Try asking things like:
     -What are vitamins?
     """)
-    st.markdown(
-        """
-        <style>
-        .stApp {
-            background-color: #e6ffe6;
-        }
-        </style>
-        """,
-        unsafe_allow_html=True
-    )
- st.markdown(
-        """
-        <style>
-        .stApp {
-            background-color: #e6ffe6;
-        }
-        </style>
-        """,
-        unsafe_allow_html=True
-    )
-    st.markdown(
-        """
-        <style>
-        body, .stApp {
-            background-image: url('https://images.unsplash.com/photo-1504674900247-0877df9cc836?auto=format&fit=crop&w=800&q=80'), 
-                              url('https://images.unsplash.com/photo-1464306076886-debca5e8a6b0?auto=format&fit=crop&w=800&q=80'),
-                              url('https://images.unsplash.com/photo-1502741338009-cac2772e18bc?auto=format&fit=crop&w=800&q=80');
-            background-size: 300px, 200px, 150px;
-            background-repeat: repeat, repeat, repeat;
-            background-position: left top, right bottom, center center;
-        }
-        </style>
-        """,
-        unsafe_allow_html=True
-    )
+ 
