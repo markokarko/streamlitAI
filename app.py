@@ -1,9 +1,4 @@
 
-
-import streamlit as st
-import chromadb
-from transformers import pipeline
-
 # Fix SQLite version issue for ChromaDB on Streamlit Cloud
 try:
     __import__('pysqlite3')
@@ -11,6 +6,11 @@ try:
     sys.modules['sqlite3'] = sys.modules.pop('pysqlite3')
 except ImportError:
     pass
+import streamlit as st
+import chromadb
+from transformers import pipeline
+
+
 
 def setup_documents():
     client = chromadb.Client()
