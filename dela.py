@@ -111,12 +111,18 @@ def get_answer_with_source(collection, question):
     # Defensive: check for empty question
     if not question or not question.strip():
         return "Please enter a question.", "No source"
-    # Defensive: check if collection has any documents
+    # Defensive: check if collection exists and has any documents
     try:
         count = collection.count()
         if count == 0:
             return "No documents in the knowledge base. Please upload and add documents first.", "No source"
     except Exception as e:
+        # Try to re-create the collection if it does not exist
+        if "does not exists" in str(e):
+            import chromadb
+            client = chromadb.Client()
+            collection = client.create_collection(name="documents")
+            return "No documents in the knowledge base. Please upload and add documents first.", "No source"
         return f"ChromaDB error: {e}", "No source"
     # Defensive: catch query errors
     try:
