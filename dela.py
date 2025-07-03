@@ -63,6 +63,13 @@ def convert_to_markdown(file_path: str) -> str:
     raise ValueError(f"Unsupported extension: {ext}")
 
 
+def get_or_create_collection(client, collection_name: str):
+    try:
+        return client.get_collection(name=collection_name)
+    except Exception:
+        return client.create_collection(name=collection_name)
+
+
 # Reset ChromaDB collection
 def reset_collection(client, collection_name: str):
     try:
@@ -82,15 +89,13 @@ def add_text_to_chromadb(text: str, filename: str, collection_name: str = "docum
     chunks = splitter.split_text(text)
 
     if not hasattr(add_text_to_chromadb, 'client'):
+        import chromadb
         add_text_to_chromadb.client = chromadb.Client()
         add_text_to_chromadb.embedding_model = SentenceTransformer('all-MiniLM-L6-v2')
         add_text_to_chromadb.collections = {}
 
     if collection_name not in add_text_to_chromadb.collections:
-        try:
-            collection = add_text_to_chromadb.client.get_collection(name=collection_name)
-        except:
-            collection = add_text_to_chromadb.client.create_collection(name=collection_name)
+        collection = get_or_create_collection(add_text_to_chromadb.client, collection_name)
         add_text_to_chromadb.collections[collection_name] = collection
 
     collection = add_text_to_chromadb.collections[collection_name]
@@ -129,7 +134,7 @@ def get_answer_with_source(collection, question):
         if "does not exists" in str(e):
             import chromadb
             client = chromadb.Client()
-            collection = client.create_collection(name="documents")
+            collection = get_or_create_collection(client, "documents")
             return "No documents in the knowledge base. Please upload and add documents first.", "No source"
         return f"ChromaDB error: {e}", "No source"
     # Defensive: catch query errors
