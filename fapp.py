@@ -108,17 +108,28 @@ def add_text_to_chromadb(text: str, filename: str, collection_name: str = "docum
 
 # Enhanced Q&A with source
 def get_answer_with_source(collection, question):
-    results = collection.query(query_texts=[question], n_results=3)
-    docs = results["documents"][0]
-    distances = results["distances"][0]
-    ids = results["ids"][0]
-
+    # Defensive: check for empty question
+    if not question or not question.strip():
+        return "Please enter a question.", "No source"
+    # Defensive: check if collection has any documents
+    try:
+        count = collection.count()
+        if count == 0:
+            return "No documents in the knowledge base. Please upload and add documents first.", "No source"
+    except Exception as e:
+        return f"ChromaDB error: {e}", "No source"
+    # Defensive: catch query errors
+    try:
+        results = collection.query(query_texts=[question], n_results=3)
+        docs = results["documents"][0]
+        distances = results["distances"][0]
+        ids = results["ids"][0]
+    except Exception as e:
+        return f"ChromaDB query error: {e}", "No source"
     if not docs or min(distances) > 1.5:
         return "I don't have information about that topic.", "No source"
-
     context = "\n\n".join([f"Document {i+1}: {doc}" for i, doc in enumerate(docs)])
     prompt = f"""Context information:\n{context}\n\nQuestion: {question}\n\nAnswer:"""
-
     ai_model = pipeline("text2text-generation", model="google/flan-t5-small")
     response = ai_model(prompt, max_length=150)
     answer = response[0]['generated_text'].strip()
