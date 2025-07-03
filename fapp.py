@@ -466,7 +466,7 @@ def enhanced_main():
         if st.session_state.converted_docs:
             question, search_button, clear_button = enhanced_question_interface()
             if search_button and question:
-                with st.spinner("Searching through your documents..."):
+                #with st.spinner("Searching through your documents..."):
                     answer, source = get_answer_with_source(st.session_state.collection, question)
                 st.markdown("### 💡 Answer")
                 st.write(answer)
