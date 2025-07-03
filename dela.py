@@ -18,6 +18,14 @@ from docling.datamodel.base_models import InputFormat
 from docling.datamodel.pipeline_options import PdfPipelineOptions, AcceleratorOptions, AcceleratorDevice
 from datetime import datetime
 
+# FIX: Reset collection when problems occur
+def reset_database():
+    client = chromadb.Client()
+    try:
+        client.delete_collection("docs")
+    except:
+        pass
+    return client.create_collection("docs")
 
 # Convert uploaded file to markdown text
 def convert_to_markdown(file_path: str) -> str:
